@@ -1,0 +1,17 @@
+# Distribution contract
+kind=distribution case=weighted_parse input=AcAs=0.25,KhQh=0.75 expected_str=AcAs=0.250,QhKh=0.750 total_weight=1 size=2
+
+# Showdown contract
+kind=showdown case=holdem_fixed game=h board=2c3d4h5s9c dists=AcAs;KhQh win=1,0 tie=0,0
+kind=showdown case=holdem_tie game=h board=AcKcQcJcTc dists=2d2h;3d3h win=0,0 tie=0.5,0.5
+kind=showdown case=holdem_weighted game=h board=2c3d4h5s9c dists=AcAs=0.25,KcKs=0.75;QhQs=0.5,JhJs=0.5 win=1,0 tie=0,0
+kind=showdown case=holdem_overlap_skipped game=h board=2c3d4h5s9c dists=AcAs;AcKd=0.5,QhQs=0.5 win=0.5,0 tie=0,0
+kind=showdown case=draw_high_no_board game=d board=- dists=AsKsQsJsTs;AcAd7c5d2h win=1,0 tie=0,0
+kind=showdown case=omaha_eight_split game=o8 board=2c5c6cJhTd dists=3d4hKhQd;AcKcQhTs win=0.5,0.5 tie=0,0
+kind=showdown case=omaha_eight_split_pot game=o8 board=AcKcQhJsTd dists=2c3cKhQd;4c5cAhTc win=0,0 tie=0.5,0.5
+kind=showdown case=omaha_five_eight_split game=o5/8 board=2c5c6cJhTd dists=3d4hKhQd;AcKcQhTs win=0.5,0.5 tie=0,0
+kind=showdown case=omaha_six_eight_split game=o6/8 board=2c5c6cJhTd dists=3d4hKhQd;AcKcQhTs win=0.5,0.5 tie=0,0
+kind=showdown case=stud_hilo_no_qualifier_scoop game=q board=- dists=Ac2d3h4c5s7d8c;KcKdQhQsJc9d8h win=1,0 tie=0,0
+kind=showdown case=stud_eight_scoop game=e board=- dists=Ac2d3h4c5s7d8c;KcKdQhQsJc9d8h win=1,0 tie=0,0
+kind=showdown case=no_disjoint_combinations game=h board=- dists=AcAs;AcKd win=0,0 tie=0,0
+kind=showdown case=three_way_tie game=h board=AcKcQcJcTc dists=2d2h;3d3h;4d4h win=0,0,0 tie=0.3333333333333333,0.3333333333333333,0.3333333333333333

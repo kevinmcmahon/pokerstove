@@ -5,4 +5,5 @@ target_link_libraries(util_tests peval gtest gtest_main)
 
 # there are no libraries, only headers
 
-add_test(TestUtil ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/util_tests)
+add_test(NAME TestUtilFast COMMAND $<TARGET_FILE:util_tests>)
+set_tests_properties(TestUtilFast PROPERTIES LABELS "fast")

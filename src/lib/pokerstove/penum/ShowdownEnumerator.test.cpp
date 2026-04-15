@@ -4,6 +4,8 @@
 
 #include <functional>
 #include <memory>
+#include <numeric>
+#include <random>
 #include <vector>
 
 #include <pokerstove/peval/Card.h>
@@ -81,6 +83,29 @@ manualSingleCardHoldemRollout(const std::vector<CardSet>& hands,
     }
 
     return results;
+}
+
+std::vector<CardSet> dealDisjointCardSets(std::mt19937& rng,
+                                          const std::vector<size_t>& sizes)
+{
+    std::vector<int> deck(STANDARD_DECK_SIZE);
+    std::iota(deck.begin(), deck.end(), 0);
+    std::shuffle(deck.begin(), deck.end(), rng);
+
+    std::vector<CardSet> dealt;
+    dealt.reserve(sizes.size());
+
+    size_t offset = 0;
+    for (const size_t size : sizes)
+    {
+        CardSet cards;
+        for (size_t i = 0; i < size; ++i)
+            cards.insert(Card(static_cast<uint8_t>(deck[offset + i])));
+        offset += size;
+        dealt.push_back(cards);
+    }
+
+    return dealt;
 }
 
 }  // namespace
@@ -194,4 +219,48 @@ TEST(ShowdownEnumerator, SupportsNoBoardDrawGames)
     evaluator->evaluateShowdown(hands, CardSet(), evals, expected, 1.0);
 
     ExpectResultsEq(actual, expected);
+}
+
+TEST(ShowdownEnumerator, ReturnsZeroSharesWhenNoDisjointCombinationsExist)
+{
+    auto evaluator = std::make_shared<HoldemHandEvaluator>();
+    ShowdownEnumerator showdown;
+    const std::vector<CardDistribution> dists = {
+        CardDistribution(CardSet("AcAs")),
+        CardDistribution(CardSet("AcKd")),
+    };
+
+    const std::vector<EquityResult> actual =
+        showdown.calculateEquity(dists, CardSet(), evaluator);
+
+    ASSERT_EQ(2u, actual.size());
+    EXPECT_DOUBLE_EQ(0.0, actual[0].shares());
+    EXPECT_DOUBLE_EQ(0.0, actual[1].shares());
+}
+
+TEST(ShowdownEnumerator, RandomHoldemShowdownsNormalizeToOne)
+{
+    auto evaluator = std::make_shared<HoldemHandEvaluator>();
+    ShowdownEnumerator showdown;
+    std::mt19937 rng(1337);
+
+    for (size_t i = 0; i < 64; ++i)
+    {
+        const std::vector<CardSet> cards = dealDisjointCardSets(rng, {2, 2, 5});
+        const std::vector<CardDistribution> dists = {
+            CardDistribution(cards[0]),
+            CardDistribution(cards[1]),
+        };
+
+        std::vector<EquityResult> results =
+            showdown.calculateEquity(dists, cards[2], evaluator);
+        EquityResult::normalize(results);
+
+        ASSERT_EQ(2u, results.size()) << i;
+        EXPECT_NEAR(1.0, results[0].equity + results[1].equity, 1e-12) << i;
+        EXPECT_DOUBLE_EQ(results[0].equity,
+                         evaluator->evaluateEquity(cards[0], cards[1], cards[2])) << i;
+        EXPECT_DOUBLE_EQ(results[1].equity,
+                         evaluator->evaluateEquity(cards[1], cards[0], cards[2])) << i;
+    }
 }

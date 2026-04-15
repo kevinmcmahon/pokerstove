@@ -33,7 +33,7 @@ TEST(CardDistribution, ParseWeightedHands)
     EXPECT_DOUBLE_EQ(0.25, dist[CardSet("AcAs")]);
     EXPECT_DOUBLE_EQ(0.75, dist[CardSet("KhQh")]);
     EXPECT_DOUBLE_EQ(1.0, dist.weight());
-    EXPECT_EQ("AcAs=0.250,KhQh=0.750", dist.str());
+    EXPECT_EQ("AcAs=0.250,QhKh=0.750", dist.str());
 }
 
 TEST(CardDistribution, ParseRejectsInvalidInput)
@@ -84,4 +84,18 @@ TEST(CardDistribution, MissingHandLookupReturnsZero)
     CardDistribution dist(CardSet("AcAs"));
 
     EXPECT_DOUBLE_EQ(0.0, dist[CardSet("KhQh")]);
+}
+
+TEST(CardDistribution, StrRoundTripsThroughCanonicalFormat)
+{
+    CardDistribution dist;
+    ASSERT_TRUE(dist.parse("AcAs=0.25,KhQh=0.75"));
+
+    CardDistribution roundTrip;
+    ASSERT_TRUE(roundTrip.parse(dist.str()));
+
+    EXPECT_EQ(dist.str(), roundTrip.str());
+    EXPECT_DOUBLE_EQ(dist.weight(), roundTrip.weight());
+    EXPECT_DOUBLE_EQ(dist[CardSet("AcAs")], roundTrip[CardSet("AcAs")]);
+    EXPECT_DOUBLE_EQ(dist[CardSet("KhQh")], roundTrip[CardSet("KhQh")]);
 }

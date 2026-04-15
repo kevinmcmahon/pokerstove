@@ -1,11 +1,58 @@
 #include "PartitionEnumerator.h"
+
 #include <gtest/gtest.h>
+
 #include <iostream>
+#include <set>
 
 using namespace pokerstove;
 using namespace std;
 
-TEST(PartitionEnumerator, tautology) { EXPECT_EQ(1, 1); }
+namespace
+{
+
+uint64_t maskFor(const std::vector<size_t>& values)
+{
+    uint64_t mask = 0;
+    for (const size_t value : values)
+        mask |= UINT64_C(0x01) << value;
+    return mask;
+}
+
+}  // namespace
+
+TEST(PartitionEnumerator, StartsAtLowestIndices)
+{
+    PartitionEnumerator2 walker(5, {2, 1});
+
+    EXPECT_EQ("{0 1} {2}", walker.str());
+    EXPECT_EQ("{0 1} {0}", walker.index_str());
+}
+
+TEST(PartitionEnumerator, MasksMatchEnumeratedPartitions)
+{
+    PartitionEnumerator2 walker(6, {2, 2});
+
+    do
+    {
+        EXPECT_EQ(maskFor(walker.get(0)), walker.getMask(0));
+        EXPECT_EQ(maskFor(walker.get(1)), walker.getMask(1));
+    } while (walker.next());
+}
+
+TEST(PartitionEnumerator, EnumeratesUniquePartitions)
+{
+    PartitionEnumerator2 walker(5, {2, 1});
+    std::set<std::string> seen;
+
+    do
+    {
+        const std::string state = walker.str();
+        EXPECT_TRUE(seen.insert(state).second);
+    } while (walker.next());
+
+    EXPECT_EQ(30u, seen.size());
+}
 
 TEST(PartitionEnumerator, chinese_settings)
 {
@@ -24,7 +71,7 @@ TEST(PartitionEnumerator, chinese_settings)
     EXPECT_EQ(72072, visits);
 }
 
-TEST(PartitionEnumerator, DISABLED_slow_all_ofcp_draws)
+TEST(PartitionEnumerator, DISABLED_SlowAllOfcpDraws)
 {
     // ofcp = open face chinese poker
     // compute the number of possible draw sets in open face chinese poker

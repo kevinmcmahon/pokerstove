@@ -1,8 +1,31 @@
+#include "Card.h"
 #include "CardSet.h"
+
 #include <gtest/gtest.h>
+
+#include <numeric>
+#include <random>
 #include <stdexcept>
+#include <vector>
 
 using namespace pokerstove;
+
+namespace
+{
+
+CardSet RandomCardSet(std::mt19937& rng, size_t count)
+{
+    std::vector<int> deck(STANDARD_DECK_SIZE);
+    std::iota(deck.begin(), deck.end(), 0);
+    std::shuffle(deck.begin(), deck.end(), rng);
+
+    CardSet cards;
+    for (size_t i = 0; i < count; ++i)
+        cards.insert(Card(static_cast<uint8_t>(deck[i])));
+    return cards;
+}
+
+}  // namespace
 
 TEST(CardSetTest, StringConstructorToString)
 {
@@ -150,4 +173,19 @@ TEST(CardSetTest, fromColex)
     const CardSet fourCardZero("2c3c4c5c");
     const CardSet result2 = CardSet::fromColex(4, 0);
     EXPECT_EQ(result2,  fourCardZero);
+}
+
+TEST(CardSetTest, CanonizeIsIdempotentForRandomHands)
+{
+    std::mt19937 rng(1337);
+
+    for (size_t i = 0; i < 128; ++i)
+    {
+        const CardSet cards = RandomCardSet(rng, i % 8);
+        const CardSet canonical = cards.canonize();
+
+        EXPECT_EQ(canonical, canonical.canonize()) << i;
+        EXPECT_EQ(cards.size(), canonical.size()) << i;
+        EXPECT_EQ(cards.countRanks(), canonical.countRanks()) << i;
+    }
 }

@@ -1,0 +1,52 @@
+# Allocator contract
+kind=alloc case=holdem game=h hand_size=2 board_size=5 evaluation_size=1 uses_suits=true
+kind=alloc case=omaha_high_upper game=O hand_size=4 board_size=5 evaluation_size=1 uses_suits=true
+kind=alloc case=omaha_high_lower game=o hand_size=4 board_size=5 evaluation_size=1 uses_suits=true
+kind=alloc case=omaha_eight_short game=o8 hand_size=4 board_size=5 evaluation_size=2 uses_suits=true
+kind=alloc case=omaha_eight_slash game=o/8 hand_size=4 board_size=5 evaluation_size=2 uses_suits=true
+kind=alloc case=omaha_alias game=omaha hand_size=4 board_size=5 evaluation_size=1 uses_suits=true
+kind=alloc case=omaha_eight_alias game=OMAHA/8 hand_size=4 board_size=5 evaluation_size=2 uses_suits=true
+kind=alloc case=omaha_five game=o5 hand_size=4 board_size=5 evaluation_size=1 uses_suits=true
+kind=alloc case=omaha_six game=o6 hand_size=4 board_size=5 evaluation_size=1 uses_suits=true
+kind=alloc case=omaha_five_eight game=o5/8 hand_size=4 board_size=5 evaluation_size=2 uses_suits=true
+kind=alloc case=omaha_six_eight game=o6/8 hand_size=4 board_size=5 evaluation_size=2 uses_suits=true
+kind=alloc case=kansas_city game=k hand_size=5 board_size=0 evaluation_size=1 uses_suits=true
+kind=alloc case=ace_to_five game=l hand_size=5 board_size=0 evaluation_size=1 uses_suits=true
+kind=alloc case=three_card_poker game=3 hand_size=3 board_size=0 evaluation_size=1 uses_suits=true
+kind=alloc case=razz game=r hand_size=7 board_size=0 evaluation_size=1 uses_suits=false
+kind=alloc case=stud game=s hand_size=7 board_size=0 evaluation_size=1 uses_suits=true
+kind=alloc case=stud_hilo_no_qualifier game=q hand_size=7 board_size=0 evaluation_size=2 uses_suits=true
+kind=alloc case=draw_high_lower game=d hand_size=5 board_size=0 evaluation_size=1 uses_suits=true
+kind=alloc case=draw_high_upper game=D hand_size=5 board_size=0 evaluation_size=1 uses_suits=true
+kind=alloc case=deuce_to_seven game=t hand_size=5 board_size=0 evaluation_size=1 uses_suits=true
+kind=alloc case=triple_draw_a5 game=T hand_size=5 board_size=0 evaluation_size=1 uses_suits=true
+kind=alloc case=stud_eight game=e hand_size=7 board_size=0 evaluation_size=2 uses_suits=true
+kind=alloc case=badugi game=b hand_size=4 board_size=0 evaluation_size=1 uses_suits=true
+
+# Direct evaluation contract
+kind=eval case=holdem_two_pair game=h hand=AcKs board=AhKd2c3d9s high_type=4 high_major=A high_minor=K highlow=false
+kind=eval case=omaha_high_two_pair game=O hand=2d3dKhQd board=2c3c4c high_type=4 high_major=3 high_minor=2 highlow=false
+kind=eval case=omaha_five_two_pair game=o5 hand=2d3dKhQd board=2c3c4c high_type=4 high_major=3 high_minor=2 highlow=false
+kind=eval case=omaha_six_two_pair game=o6 hand=2d3dKhQd board=2c3c4c high_type=4 high_major=3 high_minor=2 highlow=false
+kind=eval case=omaha_eight_has_low game=o8 hand=4c3cKhQd board=AcKc6cJs2d high_type=8 high_major=- high_minor=- highlow=true
+kind=eval case=omaha_eight_no_low game=o8 hand=2c3cKhQd board=AcKcQhJsTd high_type=7 high_major=A high_minor=- highlow=false
+kind=eval case=omaha_five_eight_has_low game=o5/8 hand=4c3cKhQd board=AcKc6cJs2d high_type=8 high_major=- high_minor=- highlow=true
+kind=eval case=omaha_six_eight_has_low game=o6/8 hand=4c3cKhQd board=AcKc6cJs2d high_type=8 high_major=- high_minor=- highlow=true
+kind=eval case=stud_eight_has_low game=e hand=Ac2d3h4c5s7d8c board=- high_type=7 high_major=5 high_minor=- highlow=true
+kind=eval case=stud_eight_no_low game=e hand=AcKdQhJsTc9d8c board=- high_type=7 high_major=A high_minor=- highlow=false
+kind=eval case=stud_hilo_no_qualifier_has_low game=q hand=AcKdQhJsTc9d8c board=- high_type=7 high_major=A high_minor=- highlow=true
+
+# Ordering contract
+kind=compare case=holdem_pair_beats_high_card game=h hand_a=AcAs hand_b=KhQh board=2c3d4h5s9c expect=gt
+kind=compare case=omaha_high_two_pair_beats_one_pair game=O hand_a=2d3dKhQd hand_b=4d5dKhQh board=2c3c4c expect=gt
+kind=compare case=omaha_five_two_pair_beats_one_pair game=o5 hand_a=2d3dKhQd hand_b=4d5dKhQh board=2c3c4c expect=gt
+kind=compare case=omaha_six_two_pair_beats_one_pair game=o6 hand_a=2d3dKhQd hand_b=4d5dKhQh board=2c3c4c expect=gt
+kind=compare case=kansas_city_seven_low_beats_straight game=k hand_a=2c3d4h5s7c hand_b=2d3h4s5c6d board=- expect=gt
+kind=compare case=ace_to_five_wheel_beats_six_low game=l hand_a=Ac2d3h4s5c hand_b=2c3d4h5s6d board=- expect=gt
+kind=compare case=three_card_straight_flush_beats_pair game=3 hand_a=As2s3s hand_b=AcAdKh board=- expect=gt
+kind=compare case=razz_wheel_beats_paired_hand game=r hand_a=As2d3h4c5s7d8c hand_b=2c2d3c4d5h7s8h board=- expect=gt
+kind=compare case=stud_straight_flush_beats_pair game=s hand_a=AsKsQsJsTs9d8c hand_b=AcAd7c5d2h3s4c board=- expect=gt
+kind=compare case=draw_high_straight_flush_beats_pair game=d hand_a=AsKsQsJsTs hand_b=AcAd7c5d2h board=- expect=gt
+kind=compare case=deuce_to_seven_seven_low_beats_straight game=t hand_a=2c3d4h5s7c hand_b=2d3h4s5c6d board=- expect=gt
+kind=compare case=triple_draw_a5_wheel_beats_pair game=T hand_a=Ac2d3h4s5c hand_b=2c2d3h4s5d board=- expect=gt
+kind=compare case=badugi_four_card_beats_three_card game=b hand_a=Ac2d3h4s hand_b=Ac2c3h4s board=- expect=gt

@@ -5,7 +5,15 @@
 using namespace pokerstove;
 using namespace std;
 
-TEST(SimpleDeck, tautology) { EXPECT_EQ(1, 1); }
+TEST(SimpleDeck, DefaultDeckStartsOrderedAndFull)
+{
+    SimpleDeck deck;
+
+    EXPECT_EQ(52, deck.size());
+    EXPECT_EQ(CardSet("2c"), deck[0]);
+    EXPECT_EQ(CardSet("As"), deck[51]);
+    EXPECT_EQ(CardSet(), deck.dead());
+}
 
 TEST(SimpleDeck, remove_card)
 {
@@ -27,26 +35,20 @@ TEST(SimpleDeck, remove_card)
     EXPECT_FALSE(d.deal(50).contains(clubAce));
 }
 
-TEST(SimpleDeck, shuffe)
+TEST(SimpleDeck, shuffle_preserves_card_set_and_resets_boundary)
 {
-    SimpleDeck shuffled;
-    SimpleDeck unshuffled;
+    SimpleDeck deck;
+    deck.remove(CardSet("AcKd"));
+    deck.deal(5);
 
-    shuffled.shuffle();
+    deck.shuffle();
 
-    EXPECT_EQ(shuffled.size(), unshuffled.size());
+    CardSet all;
+    all.fill();
 
-    // check that the first 26 cards are different.
-    // there is some very small fininte chance this fails
-    uint64_t shuffled26 = shuffled.deal(26).mask();
-    uint64_t unshuffled26 = unshuffled.deal(26).mask();
-    EXPECT_NE(shuffled26, unshuffled26);
-
-    // pull the rest of the cards out of the deck
-    // we should have a full deck
-    shuffled26 |= shuffled.deal(26).mask();
-    unshuffled26 |= unshuffled.deal(26).mask();
-    EXPECT_EQ(shuffled26, unshuffled26);
+    EXPECT_EQ(52, deck.size());
+    EXPECT_EQ(CardSet(), deck.dead());
+    EXPECT_EQ(all, deck.deal(52));
 }
 
 TEST(SimpleDeck, deal_too_many_cards_throws)
