@@ -104,10 +104,6 @@ std::shared_ptr<PokerHandEvaluator> PokerHandEvaluator::alloc (const string & in
       ret.reset (new DeuceToSevenHandEvaluator);
       break;
 
-    case 'T':		//     triple draw lowball (A-5)
-      ret.reset (new UniversalHandEvaluator (1,5,0,0,0,&CardSet::evaluateLowA5, NULL));
-      break;
-
     case 'e':		//     stud/8
       //ret.reset (new UniversalHandEvaluator (1,7,0,0,0,&CardSet::evaluateHigh, &CardSet::evaluate8LowA5));
       ret.reset (new StudEightHandEvaluator);

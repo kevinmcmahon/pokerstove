@@ -25,7 +25,6 @@
 using namespace std;
 using namespace boost;
 using namespace pokerstove;
-using namespace pokerstove;
 
 // some suit mask macros
 #define SMASK(n) (static_cast<int>(_cardmask >> (n)*Rank::NUM_RANK) & 0x1FFF)
@@ -301,13 +300,13 @@ vector<CardSet> CardSet::cardSets() const
 
 CardSet& CardSet::remove(const CardSet& c)
 {
-    _cardmask ^= c._cardmask;
+    _cardmask &= ~c._cardmask;
     return *this;
 }
 
 CardSet& CardSet::remove(const Card& c)
 {
-    _cardmask ^= ONE64 << c.code();
+    _cardmask &= ~(ONE64 << c.code());
     return *this;
 }
 
@@ -1426,7 +1425,7 @@ CardSet CardSet::fromColex(size_t items, size_t count, size_t colex)
     // we have the bins of the biggest index, find the right bin.
     // instead of doing binary search, we just scan
     size_t X = -1;
-    for (int i=1; i< bins.size()+1; i++) {
+    for (int i=1; i< (int)bins.size(); i++) {
         if (bins[i] > V) {
             X = (i-1) + (K-1);
             V = V - bins[i-1];

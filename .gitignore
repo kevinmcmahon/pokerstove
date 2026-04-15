@@ -1,7 +1,64 @@
+# Build directories
+build/
+build-*/
+dist/
+out/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+install_manifest.txt
+Makefile
+
+# Compiled output
+*.o
+*.a
+*.so
+*.so.*
+*.dylib
+*.exe
+*.out
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+.TemporaryItems
+
+# Ubuntu / Linux
 *~
-build
-dist
-*.pyc
-*.vscode
+.directory
+.Trash-*
+
+# Editors
 *.swp
+*.swo
+*.swn
+.vscode/
+.idea/
+*.kate-swp
+*.sublime-project
+*.sublime-workspace
+\#*\#
+.#*
+
+# Logs and temp
 *.log
+*.tmp
+*.bak
+*.orig
+
+# Python
+*.pyc
+*.pyo
+__pycache__/
+*.egg-info/
+.eggs/
+
+# CTest / CDash
+Testing/

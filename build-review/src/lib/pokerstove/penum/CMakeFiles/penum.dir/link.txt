@@ -1,2 +1,0 @@
-/usr/bin/ar qc ../../../../lib/libpenum.a CMakeFiles/penum.dir/CardDistribution.cpp.o CMakeFiles/penum.dir/ShowdownEnumerator.cpp.o
-/usr/bin/ranlib ../../../../lib/libpenum.a
