@@ -45,7 +45,7 @@ jobs:
       run: pipx run build
 
     - name: Install Wheel
-      run: pip install dist/pokerstove-*.whl 
+      run: pip install --break-system-packages dist/pokerstove-*.whl
 
     - name: Test Wheel
       run: python src/lib/python/test-python
