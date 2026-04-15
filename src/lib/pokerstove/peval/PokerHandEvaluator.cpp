@@ -16,10 +16,6 @@ PokerHandEvaluator::PokerHandEvaluator()
 
 PokerHandEvaluator::~PokerHandEvaluator() {}
 
-static double INV_LUT[] = {0,
-                           1/1.0, 1/2.0, 1/3.0, 1/4.0, 1/5.0,
-                           1/6.0, 1/7.0, 1/8.0, 1/9.0, 1/10.0};
-
 /**
  * debugging util
  */
@@ -82,14 +78,15 @@ void PokerHandEvaluator::evaluateShowdown(const vector<CardSet>& hands,
         // award shares to the winner, or...
         if (shares == 1)
         {
-            result[winner].winShares += INV_LUT[nevals] * weight;
+            result[winner].winShares += weight / static_cast<double>(nevals);
         }
         // award shares to those who tie
         else
         {
             for (size_t i = 0; i < hsize; i++)
                 if (evals[i].eval(e) == maxeval)
-                    result[i].tieShares += INV_LUT[shares * nevals] * weight;
+                    result[i].tieShares +=
+                        weight / static_cast<double>(shares * nevals);
         }
     }
     // display (hands, board, result);

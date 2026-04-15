@@ -10,6 +10,7 @@
 #include "Suit.h"
 #include <algorithm>
 #include <array>
+#include <cctype>
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
 #include <boost/lexical_cast.hpp>
@@ -144,20 +145,28 @@ void CardSet::fromString(const string& instr)
 {
     clear();
 
-    for (size_t i = 0; i < instr.size(); i += 2) {
-        // skip whitespace
-        if (instr[i] == ' ') {
-            i -= 1;
-            continue;
+    size_t pos = 0;
+    while (pos < instr.size()) {
+        while (pos < instr.size() &&
+               std::isspace(static_cast<unsigned char>(instr[pos]))) {
+            ++pos;
         }
-        int code = Rank::rank_code(instr[i]) +
-                   Suit::suit_code(instr[i + 1]) * Rank::NUM_RANK;
-        uint64_t mask = (ONE64 << code);
-        if (_cardmask & mask) {
-            clear();  // card duplication is an error, no hand parsed
+        if (pos == instr.size())
             return;
+        if (pos + 1 >= instr.size()) {
+            throw invalid_argument("CardSet parse error: incomplete card in input: " + instr);
         }
-        _cardmask |= mask;
+
+        Card card;
+        if (!card.fromString(instr.substr(pos, 2))) {
+            throw invalid_argument("CardSet parse error: invalid card in input: " + instr);
+        }
+        if (contains(card)) {
+            throw invalid_argument("CardSet parse error: duplicate card in input: " + instr);
+        }
+
+        insert(card);
+        pos += 2;
     }
 }
 

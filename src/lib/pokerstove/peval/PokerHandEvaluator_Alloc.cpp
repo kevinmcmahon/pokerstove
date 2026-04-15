@@ -24,9 +24,18 @@ using namespace pokerstove;
 
 std::shared_ptr<PokerHandEvaluator> PokerHandEvaluator::alloc (const string & input)
 {
+  if (input.empty())
+    return nullptr;
+
   string strid = input;
   boost::algorithm::to_lower(strid); // modifies str
   std::shared_ptr<PokerHandEvaluator> ret = nullptr;
+  if (input == "T")
+    {
+      ret.reset (new UniversalHandEvaluator (1,5,0,0,0,&CardSet::evaluateLowA5, NULL));
+      ret->_subclassID = input;
+      return ret;
+    }
   switch (strid[0])
     {
     case 'h':		//     hold'em
@@ -48,8 +57,6 @@ std::shared_ptr<PokerHandEvaluator> PokerHandEvaluator::alloc (const string & in
 
     case 'o':		//     omaha
     {
-      auto ohigh = new UniversalHandEvaluator (4,4,3,5,2,&CardSet::evaluateHigh, NULL);
-      auto ohighlow8 = new UniversalHandEvaluator (4,4,3,5,2,&CardSet::evaluateHigh, NULL);
       if (strid == "o6" || strid == "o5") {
         ret.reset (new UniversalHandEvaluator (4,4,3,5,2,&CardSet::evaluateHigh, NULL));
       } else if (strid == "o5/8" || strid == "o6/8") {

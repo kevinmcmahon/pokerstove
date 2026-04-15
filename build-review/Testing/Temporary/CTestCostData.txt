@@ -1,0 +1,13 @@
+TestPeval 6 0.0560139
+TestPenum 6 0.0158029
+TestUtil 6 0.0341827
+PsEvalInvalidGame 3 0.0662023
+PsEvalInvalidBoard 3 0.00410946
+PsEvalInvalidHand 1 0.0195447
+PsEvalNoArgs 1 0.0115207
+PsEvalMalformedArguments 1 0.0160342
+PsEvalTwoHandOutput 1 0.0159652
+PsEvalSingleHandUsesRandomHandLabel 1 0.0165312
+PsEvalQuiet 1 0.0111567
+PsEvalConflictingCards 1 0.0114807
+---

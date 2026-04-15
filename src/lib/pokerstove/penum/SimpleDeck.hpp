@@ -9,6 +9,7 @@
 #include <array>
 #include <functional>
 #include <random>
+#include <stdexcept>
 #include <pokerstove/peval/Card.h>
 #include <pokerstove/peval/CardSet.h>
 #include <pokerstove/peval/Rank.h>  // needed for NUM_RANK
@@ -81,9 +82,10 @@ public:
 
     pokerstove::CardSet deal(size_t ncards)
     {
-        // TODO: fix and test this code, edge cases clearly at risk here
         if (ncards == 0)
             return pokerstove::CardSet();
+        if (ncards > _current)
+            throw std::out_of_range("SimpleDeck::deal: not enough cards remaining");
         _current -= static_cast<uint>(ncards);
         CardSet* pcur = &_deck[_current];
         const CardSet* pend = pcur + ncards;

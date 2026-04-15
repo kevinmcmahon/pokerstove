@@ -39,7 +39,7 @@ public:
 public:
     CardSet();                                              //!< defaults to the empty set
     CardSet(const CardSet& cs);                             //!< copy constructor (default)
-    CardSet(const std::string& c);                          //!< parse cards untill fail
+    CardSet(const std::string& c);                          //!< parse cards, throws on parse failure
     explicit CardSet(const Card& c);                        //!< create a set with one card
     explicit CardSet(uint64_t mask) : _cardmask(mask) {}
 
@@ -194,7 +194,7 @@ public:
 
 protected:
     void
-    fromString(const std::string& s);   //!< throws exception on parse failre
+    fromString(const std::string& s);   //!< throws exception on parse failure
     bool isPaired() const;              //!< returns true if *any* two cards match rank
     bool isTripped() const;             //!< returns true if trips
 

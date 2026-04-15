@@ -1,5 +1,6 @@
 #include "CardSet.h"
 #include <gtest/gtest.h>
+#include <stdexcept>
 
 using namespace pokerstove;
 
@@ -10,8 +11,6 @@ TEST(CardSetTest, StringConstructorToString)
     EXPECT_EQ("Qh", CardSet("qh").str());
     EXPECT_EQ("Td", CardSet("Td").str());
     EXPECT_EQ("Td", CardSet("td").str());
-    // EXPECT_THROW(CardSet("10d"));
-    // EXPECT_THROW(CardSet("AcAc"));
 }
 
 TEST(CardSetTest, StringConstructorSize)
@@ -19,9 +18,36 @@ TEST(CardSetTest, StringConstructorSize)
     EXPECT_EQ(1, CardSet("Ac").size());
     EXPECT_EQ(1, CardSet("qh").size());
     EXPECT_EQ(13, CardSet("2h3h4h5h6h7h8h9hThJhQhKhAh").size());
+}
 
-    // duplicate cards rolls back all parsing
-    EXPECT_EQ(0, CardSet("2h2h").size());
+TEST(CardSetTest, StringConstructorRejectsInvalidInput)
+{
+    EXPECT_THROW(CardSet("10d"), std::invalid_argument);
+    EXPECT_THROW(CardSet("2h2h"), std::invalid_argument);
+    EXPECT_THROW(CardSet("AcK"), std::invalid_argument);
+}
+
+TEST(CardSetTest, StringConstructorAcceptsWhitespaceSeparatedCards)
+{
+    EXPECT_EQ(CardSet("AcKdQh"), CardSet("Ac Kd Qh"));
+    EXPECT_EQ(CardSet("AcKdQh"), CardSet("Ac\tKd\nQh"));
+}
+
+TEST(CardSetTest, StringConstructorAcceptsEmptyAndWhitespaceOnlyInput)
+{
+    EXPECT_EQ(0, CardSet("").size());
+    EXPECT_EQ(0, CardSet(" \t\n").size());
+}
+
+TEST(CardSetTest, StringConstructorRejectsInvalidSuffixAfterValidPrefix)
+{
+    EXPECT_THROW(CardSet("AcXx"), std::invalid_argument);
+    EXPECT_THROW(CardSet("AcKdAc"), std::invalid_argument);
+}
+
+TEST(CardSetTest, StringConstructorAcceptsTrailingWhitespace)
+{
+    EXPECT_EQ(CardSet("AcKd"), CardSet("AcKd \n"));
 }
 
 TEST(CardSetTest, Canonize)

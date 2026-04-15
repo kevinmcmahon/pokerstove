@@ -55,7 +55,16 @@ TEST(OmahaEightHandEvaluator, SplitPot)
     CardSet c1("2c3cKhQd");
     CardSet c2("4c5cAhTc");
     CardSet board("AcKcQhJsTd");
-    EXPECT_EQ(eval.evaluateEquity(c1, c2, board), 0.5);
+    std::vector<EquityResult> results(2);
+    std::vector<PokerHandEvaluation> evals(2);
+    std::vector<CardSet> hands = {c1, c2};
+
+    eval.evaluateShowdown(hands, board, evals, results, 1.0);
+    EquityResult::normalize(results);
+
+    EXPECT_DOUBLE_EQ(0.5, results[0].equity);
+    EXPECT_DOUBLE_EQ(0.5, results[1].equity);
+    EXPECT_DOUBLE_EQ(0.5, eval.evaluateEquity(c1, c2, board));
 }
 
 TEST(OmahaEightHandEvaluator, SplitHighLow)
@@ -65,7 +74,16 @@ TEST(OmahaEightHandEvaluator, SplitHighLow)
     CardSet c1("4c3cKhQd");
     CardSet c2("4h5cQhTc");
     CardSet board("AcKc6cJs2d");
-    EXPECT_EQ(eval.evaluateEquity(c1, c2, board), 0.5);
+    std::vector<EquityResult> results(2);
+    std::vector<PokerHandEvaluation> evals(2);
+    std::vector<CardSet> hands = {c1, c2};
+
+    eval.evaluateShowdown(hands, board, evals, results, 1.0);
+    EquityResult::normalize(results);
+
+    EXPECT_DOUBLE_EQ(0.5, results[0].equity);
+    EXPECT_DOUBLE_EQ(0.5, results[1].equity);
+    EXPECT_DOUBLE_EQ(0.5, eval.evaluateEquity(c1, c2, board));
 }
 
 TEST(OmahaEightHandEvaluator, ThreeQuartered)
@@ -75,11 +93,29 @@ TEST(OmahaEightHandEvaluator, ThreeQuartered)
     CardSet c1("4c3sKhQd");
     CardSet c2("4h5cQhKh");
     CardSet board1("Ac2d6cKcJs");
-    EXPECT_EQ(eval.evaluateEquity(c1, c2, board1), 0.75);
+    std::vector<EquityResult> results1(2);
+    std::vector<PokerHandEvaluation> evals1(2);
+    std::vector<CardSet> hands1 = {c1, c2};
+
+    eval.evaluateShowdown(hands1, board1, evals1, results1, 1.0);
+    EquityResult::normalize(results1);
+
+    EXPECT_DOUBLE_EQ(0.75, results1[0].equity);
+    EXPECT_DOUBLE_EQ(0.25, results1[1].equity);
+    EXPECT_DOUBLE_EQ(0.75, eval.evaluateEquity(c1, c2, board1));
 
     // First hand should split low, lose high
     CardSet c3("4h3dQhTc");
     CardSet c4("4c3cKhQd");
     CardSet board2("Ac2d6cKcJs");
-    EXPECT_EQ(eval.evaluateEquity(c3, c4, board2), 0.25);
+    std::vector<EquityResult> results2(2);
+    std::vector<PokerHandEvaluation> evals2(2);
+    std::vector<CardSet> hands2 = {c3, c4};
+
+    eval.evaluateShowdown(hands2, board2, evals2, results2, 1.0);
+    EquityResult::normalize(results2);
+
+    EXPECT_DOUBLE_EQ(0.25, results2[0].equity);
+    EXPECT_DOUBLE_EQ(0.75, results2[1].equity);
+    EXPECT_DOUBLE_EQ(0.25, eval.evaluateEquity(c3, c4, board2));
 }

@@ -48,7 +48,7 @@ struct EquityResult
         return ret;
     }
 
-    double shares() {
+    double shares() const {
         return winShares + tieShares;
     }
 
@@ -57,12 +57,16 @@ struct EquityResult
      */
     static void normalize(std::vector<EquityResult>& results)
     {
-        double shares = 0;
-        for (EquityResult result : results) {
-            shares += result.shares();
+        double totalShares = 0.0;
+        for (const EquityResult& result : results) {
+            totalShares += result.shares();
         }
+
+        if (totalShares == 0.0)
+            return;
+
         for (EquityResult& result : results) {
-            shares += result.equity = result.shares()/shares;
+            result.equity = result.shares() / totalShares;
         }
     }
 };
